@@ -1,8 +1,11 @@
 package tests;
 
 import org.example.films.Film;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("FilmTest")
 public class FilmTest {
 
     @Test
@@ -15,6 +18,9 @@ public class FilmTest {
                 .build();
 
         System.out.println(film.getName());
+
+        Assertions.assertTrue(film.getName() == "Troya");
+
     }
 
 }
