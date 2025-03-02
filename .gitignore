@@ -1,0 +1,31 @@
+# Игнорируем папку .idea (файлы настроек IntelliJ IDEA)
+.idea/
+
+# Игнорируем директории сборки Maven
+/target/
+
+# Игнорируем логи и временные файлы
+*.log
+*.tmp
+
+# Игнорируем настройки IDE
+*.iml
+*.ipr
+*.iws
+
+# Игнорируем кеши и временные файлы Maven
+.mvn/
+**/pom.xml.tag
+**/pom.xml.releaseBackup
+**/pom.xml.versionsBackup
+**/pom.xml.next
+release.properties
+
+# Игнорируем файлы, сгенерированные плагинами Maven
+dependency-reduced-pom.xml
+buildNumber.properties
+.m2/repository/
+
+# Игнорируем настройки OS (например, MacOS)
+.DS_Store
+Thumbs.db
