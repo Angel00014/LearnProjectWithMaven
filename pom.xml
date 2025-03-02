@@ -10,8 +10,13 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <project.build.sourseEncoding>UTF-8</project.build.sourseEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.junit.version>5.12.0</project.build.junit.version>
+        <project.build.aspectj>1.9.9.1</project.build.aspectj>
+        <project.build.allure.version>2.12.0</project.build.allure.version>
+        <project.build.allure.cmd>
+            https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline
+        </project.build.allure.cmd>
     </properties>
 
     <dependencies>
@@ -28,10 +33,23 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>1.12.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.36</version>
+            <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit5</artifactId>
+            <version>${project.build.allure.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -43,6 +61,37 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <allure.results.directory>target/allure-results</allure.results.directory>
+                    </systemPropertyVariables>
+                    <argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${project.build.aspectj}/aspectjweaver-${project.build.aspectj}.jar"
+                    </argLine>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${project.build.aspectj}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>${project.build.allure.version}</version>
+                <configuration>
+                    <reportVersion>${project.build.allure.version}</reportVersion>
+                    <allureDownloadUrl>
+                        ${project.build.allure.cmd}/${project.build.allure.version}/allure-commandline-${project.build.allure.version}.zip
+                    </allureDownloadUrl>
                 </configuration>
             </plugin>
         </plugins>
