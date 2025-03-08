@@ -1,6 +1,6 @@
-package tests;
+package tests.oldTests;
 
-import org.example.films.Film;
+import org.example.oldFile.films.Film;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
