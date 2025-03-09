@@ -7,9 +7,6 @@ import org.example.service.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -35,7 +32,7 @@ public class TaskController {
 
     @Operation(summary = "Получение одной задачи по id")
     @GetMapping("/task/{id}")
-    public TaskModelList.TaskModelWithId getOneTask(int id){
+    public TaskModelList.TaskModelWithId getOneTask(int id) throws Exception{
         return Task.getOneTask(id);
     }
 
@@ -76,6 +73,4 @@ public class TaskController {
 
         return new TaskModelList();
     }
-
-
 }
