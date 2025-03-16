@@ -19,9 +19,9 @@ public class Task {
         Task.taskRepository = taskRepository;
     }
 
-    public static TaskModelList getAllTasks(Optional<Integer> count){
+    public static TaskModelList getAllTasks(Integer limit){
 
-        List<TaskModelList.TaskModelWithId> taskListFromDb = taskRepository.getAllTasksFromDb(count);
+        List<TaskModelList.TaskModelWithId> taskListFromDb = taskRepository.getAllTasksFromDb(limit);
 
         TaskModelList taskModelList = new TaskModelList();
 

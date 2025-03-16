@@ -16,9 +16,8 @@ public class TaskRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<TaskModelList.TaskModelWithId> getAllTasksFromDb(Optional<Integer> count){
+    public List<TaskModelList.TaskModelWithId> getAllTasksFromDb(Integer limit){
 
-        int limit = count.orElse(200);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<TaskModelList.TaskModelWithId> criteriaQuery = criteriaBuilder.createQuery(TaskModelList.TaskModelWithId.class);
         Root<TaskModelList.TaskModelWithId> root = criteriaQuery.from(TaskModelList.TaskModelWithId.class);

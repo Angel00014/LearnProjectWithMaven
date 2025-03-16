@@ -8,26 +8,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
 public class TaskController {
 
+    private final ResponseModel response = new ResponseModel();
+
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
     @Operation(summary = "Получение всего списка задач")
     @GetMapping("/tasks")
-    public TaskModelList getAllTasks(Optional<Integer> count) throws Exception{
+    public ResponseEntity<?> getAllTasks(@RequestParam(required = false) Integer limit) throws Exception{
 
-        if (!count.isPresent()){
-            count = Optional.of(200);
+        if (limit == null){
+            limit = 200;
         }
         else{
-            if (count.get() > 200){
-                throw new Exception("Нельзя запросить больше 200 записей");
+            if (limit > 200){
+                response.setMessage("Параметр limit > 200");
+                response.setContent(null);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+            } else if (limit < 1) {
+                response.setMessage("Параметр limit < 1");
+                response.setContent(null);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
         }
-        return Task.getAllTasks(count);
+        return ResponseEntity.ok(Task.getAllTasks(limit));
     }
 
     @Operation(summary = "Получение одной задачи по id")
@@ -42,11 +54,9 @@ public class TaskController {
         ResponseModel response = new ResponseModel();
         try {
             TaskModelList.TaskModelWithId newTask = Task.createTask(taskModel.getName(), taskModel.getDateTime(), taskModel.getTimeBefore());
-            response.setStatusCode(200);
             response.setContent(newTask);
             return response;
         }catch (Exception e){
-            response.setStatusCode(500);
             response.setContent("Ошибка выполнения запроса: " + e);
             return response;
         }

@@ -18,5 +18,5 @@ spring:
       path: /api-docs
     swagger-ui:
       path: /swagger-ui.html
-
-
+app:
+  base_url: http://localhost:8080

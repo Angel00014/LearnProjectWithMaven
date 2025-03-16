@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseModel {
-    private int statusCode;
+    private String message;
     private Object content;
 }
