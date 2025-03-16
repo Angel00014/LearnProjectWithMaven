@@ -27,8 +27,8 @@ public class TaskController {
         if (limit == null){
             limit = 200;
         }
-        else{
-            if (limit > 200){
+        else {
+            if (limit > 200) {
                 response.setMessage("Параметр limit > 200");
                 response.setContent(null);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -44,7 +44,7 @@ public class TaskController {
 
     @Operation(summary = "Получение одной задачи по id")
     @GetMapping("/task/{id}")
-    public TaskModelList.TaskModelWithId getOneTask(int id) throws Exception{
+    public TaskModelList.TaskModelWithId getOneTask(@PathVariable int id) throws Exception{
         return Task.getOneTask(id);
     }
 

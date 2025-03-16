@@ -1,29 +1,30 @@
 package tests.ApiTests;
 
-import io.restassured.response.Response;
-import org.example.config.AppConfig;
 import org.example.model.ResponseModel;
 import org.example.model.TaskModelList;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tests.BaseApi;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
+import java.util.Random;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 public class  GetTasksTest extends BaseApi {
 
     private static final Logger log = LoggerFactory.getLogger(GetTasksTest.class);
     private static String method_url;
+    private final Random random = new Random();
 
     @BeforeAll
     public static void beforeTest() throws IOException {
@@ -36,19 +37,22 @@ public class  GetTasksTest extends BaseApi {
                 .then()
                 .log()
                 .all()
-                .statusCode(200);
+                .statusCode(200)
+                .extract()
+                .as(TaskModelList.class);;
 
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 200})
+    @ValueSource(ints = {1,100, 200})
     public void getTasksWithParam(int limit) throws IOException {
         given().queryParams("limit", limit)
                 .get(method_url)
                 .then()
                 .log()
                 .all()
-                .statusCode(200);
+                .statusCode(200)
+                .body("taskList", hasSize(lessThanOrEqualTo(limit)));
 
     }
 
@@ -63,8 +67,6 @@ public class  GetTasksTest extends BaseApi {
                 .statusCode(400)
                 .extract()
                 .as(ResponseModel.class);
-
-
     }
 
     @ParameterizedTest
@@ -79,13 +81,29 @@ public class  GetTasksTest extends BaseApi {
     }
 
     @Test
-    public void checkResponseModel(){
-        given().get(method_url)
+    public void getIdFromResponse(){
+
+        List<TaskModelList.TaskModelWithId> listTasks = given().get(method_url)
+                .then()
+                .log()
+                .all()
+                .extract()
+                .jsonPath()
+                .getList("taskList", TaskModelList.TaskModelWithId.class);
+
+
+        TaskModelList.TaskModelWithId taskFromList = listTasks.get(random.nextInt(listTasks.size() - 1));
+
+        TaskModelList.TaskModelWithId checkTask = given()
+                .pathParams("id", taskFromList.getId())
+                .get("http://localhost:8080/api/task/{id}")
                 .then()
                 .log().all()
-                .statusCode(200)
                 .extract()
-                .as(TaskModelList.class);
+                .as(TaskModelList.TaskModelWithId.class);
+
+        Assertions.assertEquals(taskFromList, checkTask, "Сравнение полученных данных");
+
     }
 
 
