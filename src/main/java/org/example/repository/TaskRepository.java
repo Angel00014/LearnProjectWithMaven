@@ -8,7 +8,6 @@ import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class TaskRepository {
@@ -41,12 +40,15 @@ public class TaskRepository {
         criteriaQuery.select(root).where(idPredicate);
 
         TypedQuery<TaskModelList.TaskModelWithId> query = entityManager.createQuery(criteriaQuery);
-
-        return query.getSingleResult();
+        try {
+            return query.getSingleResult();
+        }catch (NoResultException e){
+            return null;
+        }
     }
 
     @Transactional
-    public TaskModelList.TaskModelWithId createTaskFromDb(String name, LocalDateTime datetime, String timeBefore){
+    public TaskModelList.TaskModelWithId createTaskToDb(String name, LocalDateTime datetime, String timeBefore){
         TaskModelList.TaskModelWithId newTask = new TaskModelList.TaskModelWithId();
 
         newTask.setName(name);
@@ -57,6 +59,35 @@ public class TaskRepository {
         entityManager.flush();
 
         return newTask;
+    }
+
+    @Transactional
+    public TaskModelList.TaskModelWithId fullUpdateTaskToDb(TaskModelList.TaskModelWithId task){
+        TaskModelList.TaskModelWithId findTask = getOneTaskFromDb(task.getId());
+
+        if (findTask.getId() == task.getId()){
+
+            findTask.setName(task.getName());
+            findTask.setDateTime(task.getDateTime());
+            findTask.setTimeBefore(task.getTimeBefore());
+
+            entityManager.persist(findTask);
+            entityManager.flush();
+
+            return findTask;
+
+        }else {
+            return null;
+        }
+    }
+
+    @Transactional
+    public void deleteTask(TaskModelList.TaskModelWithId task){
+        try {
+            entityManager.remove(task);
+        }catch (Exception e){
+            System.out.println(e);
+        }
     }
 
 }

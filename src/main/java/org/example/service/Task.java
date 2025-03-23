@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class Task {
@@ -31,14 +30,19 @@ public class Task {
     }
 
     public static TaskModelList.TaskModelWithId getOneTask(int id){
-
         return taskRepository.getOneTaskFromDb(id);
     }
 
     public static TaskModelList.TaskModelWithId createTask(String name, LocalDateTime datetime, String timeBefore){
+        return taskRepository.createTaskToDb(name, datetime, timeBefore);
+    }
 
-        return taskRepository.createTaskFromDb(name, datetime, timeBefore);
+    public static TaskModelList.TaskModelWithId fullUpdateTask(TaskModelList.TaskModelWithId task){
+        return taskRepository.fullUpdateTaskToDb(task);
+    }
 
+    public static void deleteTask(TaskModelList.TaskModelWithId task){
+        taskRepository.deleteTask(task);
     }
 
 }

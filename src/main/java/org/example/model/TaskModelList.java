@@ -2,10 +2,7 @@ package org.example.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,11 +27,13 @@ public class TaskModelList {
     @Data
     @MappedSuperclass
     @NoArgsConstructor
+    @Builder
     public static class TaskModel {
         @JsonProperty("name")
         protected String name;
 
         @JsonProperty("dateTime")
+        @Schema(description = "Дата и время события", example = "2025-03-16T14:15:24")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
         protected LocalDateTime dateTime;
 
