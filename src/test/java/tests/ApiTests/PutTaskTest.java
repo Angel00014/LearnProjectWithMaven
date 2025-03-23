@@ -1,5 +1,8 @@
 package tests.ApiTests;
 
+import io.restassured.RestAssured;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import org.example.model.TaskModelList;
 import org.junit.jupiter.api.AfterAll;
@@ -29,6 +32,7 @@ public class PutTaskTest extends BaseApi {
     public static void beforeTest() throws IOException {
         method_url = getAppConfig().getApp().getBaseUrl() + "/api/task";
         method_get_all_url = getAppConfig().getApp().getBaseUrl() + "/api/tasks";
+        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
     }
 
 
@@ -37,8 +41,6 @@ public class PutTaskTest extends BaseApi {
 
         List<TaskModelList.TaskModelWithId> listTasks = given().get(method_get_all_url)
                 .then()
-                .log()
-                .all()
                 .extract()
                 .jsonPath()
                 .getList("taskList", TaskModelList.TaskModelWithId.class);
@@ -46,7 +48,7 @@ public class PutTaskTest extends BaseApi {
 
         TaskModelList.TaskModelWithId taskFromList = listTasks.get(random.nextInt(listTasks.size() - 1));
 
-        LocalDateTime dateTime = LocalDateTime.of(2025, 4, 30, 14, 20, 47);
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(random.nextInt(30));
         System.out.println(dateTime);
         taskFromList.setDateTime(dateTime);
 
@@ -54,8 +56,6 @@ public class PutTaskTest extends BaseApi {
                 .contentType(ContentType.JSON)
                 .put(method_url)
                 .then()
-                .log()
-                .all()
                 .statusCode(200)
                 .extract().
                 as(TaskModelList.TaskModelWithId.class);
@@ -64,7 +64,6 @@ public class PutTaskTest extends BaseApi {
                 .pathParams("id", updateTask.getId())
                 .get(method_url + "/{id}")
                 .then()
-                .log().all()
                 .statusCode(200)
                 .extract()
                 .as(TaskModelList.TaskModelWithId.class);

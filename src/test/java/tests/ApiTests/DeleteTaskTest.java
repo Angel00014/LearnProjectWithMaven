@@ -1,5 +1,8 @@
 package tests.ApiTests;
 
+import io.restassured.RestAssured;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import org.example.model.TaskModelList;
 import org.junit.jupiter.api.AfterAll;
@@ -28,6 +31,7 @@ public class DeleteTaskTest extends BaseApi {
     public static void beforeTest() throws IOException {
         method_url = getAppConfig().getApp().getBaseUrl() + "/api/task";
         method_get_all_url = getAppConfig().getApp().getBaseUrl() + "/api/tasks";
+        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
     }
 
 

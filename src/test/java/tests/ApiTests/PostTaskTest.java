@@ -1,5 +1,8 @@
 package tests.ApiTests;
 
+import io.restassured.RestAssured;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import org.example.model.TaskModelList;
 import org.junit.jupiter.api.AfterAll;
@@ -25,25 +28,17 @@ public class PostTaskTest extends BaseApi {
     @BeforeAll
     public static void beforeTest() throws IOException {
         method_url = getAppConfig().getApp().getBaseUrl() + "/api/task";
+        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
     }
 
 
     @Test
     public void createTaskTest(){
-        LocalDateTime dateTime = LocalDateTime.of(2025, 3, 17, 14, 20, 47);
-        System.out.println(dateTime);
-        TaskModelList.TaskModel taskModel = TaskModelList.TaskModel.builder()
-                .name("Тест")
-                .dateTime(dateTime)
-                .timeBefore("15m")
-                .build();
 
-        TaskModelList.TaskModelWithId createTask = given().body(taskModel)
+        TaskModelList.TaskModelWithId createTask = given().body(randomTask())
                 .contentType(ContentType.JSON)
                 .post(method_url)
                 .then()
-                .log()
-                .all()
                 .statusCode(201)
                 .extract().
                 as(TaskModelList.TaskModelWithId.class);
@@ -51,8 +46,6 @@ public class PostTaskTest extends BaseApi {
         given().pathParams("id", createTask.getId())
                 .get(method_url + "/{id}")
                 .then()
-                .log()
-                .all()
                 .statusCode(200);
     }
 

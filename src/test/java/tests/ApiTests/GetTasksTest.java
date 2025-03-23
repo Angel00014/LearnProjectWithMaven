@@ -1,5 +1,8 @@
 package tests.ApiTests;
 
+import io.restassured.RestAssured;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
 import org.example.model.ResponseModel;
 import org.example.model.TaskModelList;
 import org.junit.jupiter.api.AfterAll;
@@ -29,14 +32,13 @@ public class  GetTasksTest extends BaseApi {
     @BeforeAll
     public static void beforeTest() throws IOException {
         method_url = getAppConfig().getApp().getBaseUrl() + "/api/tasks";
+        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
     }
 
     @Test
     public void getTasksSuccess() throws IOException {
         given().get(method_url)
                 .then()
-                .log()
-                .all()
                 .statusCode(200)
                 .extract()
                 .as(TaskModelList.class);;
@@ -49,8 +51,6 @@ public class  GetTasksTest extends BaseApi {
         given().queryParams("limit", limit)
                 .get(method_url)
                 .then()
-                .log()
-                .all()
                 .statusCode(200)
                 .body("taskList", hasSize(lessThanOrEqualTo(limit)));
 
@@ -63,7 +63,6 @@ public class  GetTasksTest extends BaseApi {
         given().queryParams("limit", limit)
                 .get(method_url)
                 .then()
-                .log().all()
                 .statusCode(400)
                 .extract()
                 .as(ResponseModel.class);
@@ -75,8 +74,6 @@ public class  GetTasksTest extends BaseApi {
         given().queryParams("limit", limit)
                 .get(method_url)
                 .then()
-                .log()
-                .all()
                 .statusCode(400);
     }
 
@@ -85,8 +82,6 @@ public class  GetTasksTest extends BaseApi {
 
         List<TaskModelList.TaskModelWithId> listTasks = given().get(method_url)
                 .then()
-                .log()
-                .all()
                 .extract()
                 .jsonPath()
                 .getList("taskList", TaskModelList.TaskModelWithId.class);
@@ -98,7 +93,6 @@ public class  GetTasksTest extends BaseApi {
                 .pathParams("id", taskFromList.getId())
                 .get("http://localhost:8080/api/task/{id}")
                 .then()
-                .log().all()
                 .extract()
                 .as(TaskModelList.TaskModelWithId.class);
 
