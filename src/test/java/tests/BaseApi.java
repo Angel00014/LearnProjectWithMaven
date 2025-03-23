@@ -17,6 +17,7 @@ public class BaseApi{
 
     protected AppConfig.AppProperties appProperties;
 
+
     public static AppConfig getAppConfig() throws IOException{
         return LoadYaml.loadConfig("src/test/resources/application.yml");
     }

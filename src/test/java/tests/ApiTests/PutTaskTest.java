@@ -1,5 +1,6 @@
 package tests.ApiTests;
 
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -15,24 +16,26 @@ import tests.BaseApi;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Random;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
 
 public class PutTaskTest extends BaseApi {
 
     private static final Logger log = LoggerFactory.getLogger(PostTaskTest.class);
+    private static String base_url;
     private static String method_url;
     private static String method_get_all_url;
     private final Random random = new Random();
 
     @BeforeAll
     public static void beforeTest() throws IOException {
-        method_url = getAppConfig().getApp().getBaseUrl() + "/api/task";
-        method_get_all_url = getAppConfig().getApp().getBaseUrl() + "/api/tasks";
-        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
+        base_url = getAppConfig().getApp().getBaseUrl();
+        method_url = base_url + "/api/task";
+        method_get_all_url = base_url + "/api/tasks";
+        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter(), new AllureRestAssured());
     }
 
 
@@ -48,8 +51,8 @@ public class PutTaskTest extends BaseApi {
 
         TaskModelList.TaskModelWithId taskFromList = listTasks.get(random.nextInt(listTasks.size() - 1));
 
-        LocalDateTime dateTime = LocalDateTime.now().plusDays(random.nextInt(30));
-        System.out.println(dateTime);
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(random.nextInt(30)).truncatedTo(ChronoUnit.SECONDS);
+
         taskFromList.setDateTime(dateTime);
 
         TaskModelList.TaskModelWithId updateTask = given().body(taskFromList)

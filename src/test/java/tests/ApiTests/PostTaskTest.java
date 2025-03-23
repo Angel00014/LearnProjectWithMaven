@@ -1,5 +1,6 @@
 package tests.ApiTests;
 
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -10,12 +11,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestBody;
 import tests.BaseApi;
 
 import java.io.IOException;
 import java.util.Random;
-import java.time.LocalDateTime;
 
 import static io.restassured.RestAssured.given;
 
@@ -28,7 +27,7 @@ public class PostTaskTest extends BaseApi {
     @BeforeAll
     public static void beforeTest() throws IOException {
         method_url = getAppConfig().getApp().getBaseUrl() + "/api/task";
-        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
+        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter(), new AllureRestAssured());
     }
 
 
