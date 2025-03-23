@@ -21,25 +21,18 @@ import static io.restassured.RestAssured.given;
 public class DeleteTaskTest extends BaseApi {
 
     private static final Logger log = LoggerFactory.getLogger(PostTaskTest.class);
-    private static String method_url;
-    private static String method_get_all_url;
     private final Random random = new Random();
 
     @BeforeAll
-    public static void beforeTest() throws IOException {
-        method_url = getAppConfig().getApp().getBaseUrl() + "/api/task";
-        method_get_all_url = getAppConfig().getApp().getBaseUrl() + "/api/tasks";
+    public static void beforeTest(){
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter() , new AllureRestAssured());
     }
-
 
     @Test
     public void deleteTaskTest(){
 
         List<TaskModelList.TaskModelWithId> listTasks = given().get(method_get_all_url)
                 .then()
-                .log()
-                .all()
                 .extract()
                 .jsonPath()
                 .getList("taskList", TaskModelList.TaskModelWithId.class);
@@ -50,15 +43,12 @@ public class DeleteTaskTest extends BaseApi {
         given().pathParams("id", taskFromList.getId())
                 .delete(method_url+ "/{id}")
                 .then()
-                .log()
-                .all()
                 .statusCode(204);
 
         given()
                 .pathParams("id", taskFromList.getId())
                 .get(method_url + "/{id}")
                 .then()
-                .log().all()
                 .statusCode(404);
 
     }

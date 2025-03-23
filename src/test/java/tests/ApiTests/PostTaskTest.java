@@ -6,6 +6,8 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import org.example.model.TaskModelList;
+import org.example.repository.TaskRepository;
+import org.example.service.Task;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,13 +22,11 @@ import static io.restassured.RestAssured.given;
 
 public class PostTaskTest extends BaseApi {
 
-    private static final Logger log = LoggerFactory.getLogger(PostTaskTest.class);
-    private static String method_url;
+    private final Logger log = LoggerFactory.getLogger(PostTaskTest.class);
     private final Random random = new Random();
 
     @BeforeAll
-    public static void beforeTest() throws IOException {
-        method_url = getAppConfig().getApp().getBaseUrl() + "/api/task";
+    public static void beforeTest(){
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter(), new AllureRestAssured());
     }
 
@@ -46,12 +46,13 @@ public class PostTaskTest extends BaseApi {
                 .get(method_url + "/{id}")
                 .then()
                 .statusCode(200);
+
+        context.put("task", createTask);
     }
 
 
     @AfterAll
     public static void afterTest(){
-
     }
 
 

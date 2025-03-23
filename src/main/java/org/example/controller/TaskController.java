@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class TaskController {
 
+    private final Task taskService;
     private final ResponseModel response = new ResponseModel();
 
-    private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
+    public TaskController(Task taskService) {
+        this.taskService = taskService;
+    }
 
     @Operation(summary = "Получение всего списка задач")
     @GetMapping("/tasks")

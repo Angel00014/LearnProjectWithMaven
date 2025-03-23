@@ -25,16 +25,10 @@ import static io.restassured.RestAssured.given;
 public class PutTaskTest extends BaseApi {
 
     private static final Logger log = LoggerFactory.getLogger(PostTaskTest.class);
-    private static String base_url;
-    private static String method_url;
-    private static String method_get_all_url;
     private final Random random = new Random();
 
     @BeforeAll
     public static void beforeTest() throws IOException {
-        base_url = getAppConfig().getApp().getBaseUrl();
-        method_url = base_url + "/api/task";
-        method_get_all_url = base_url + "/api/tasks";
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter(), new AllureRestAssured());
     }
 
